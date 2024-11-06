@@ -1,0 +1,19 @@
+# Use the official Jenkins image as the base
+FROM jenkins/jenkins:2.479
+
+# Switch to the root user to install Docker CLI
+USER root
+
+# Install Docker CLI
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    apt-get install -y sudo && \
+    apt-get clean && \
+    echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Add jenkins user to the docker group if it exists
+RUN if getent group docker; then usermod -aG docker jenkins; else groupadd -g 999 docker && usermod -aG docker jenkins; fi
+
+# Switch back to the jenkins user
+USER jenkins
+

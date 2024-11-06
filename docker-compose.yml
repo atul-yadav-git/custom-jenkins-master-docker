@@ -1,0 +1,21 @@
+services:
+  jenkins:
+    image: custom-jenkins-master-image
+    build:
+      context: .
+      dockerfile: Dockerfile.master-jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_home:/var/jenkins_home
+    user: "jenkins:999" #making sure container runs with non root jenkins user and added to docker group
+    container_name: custom-jenkins-master-container
+    network_mode: bridge
+    restart: always  # Ensures the container restarts on stop
+
+volumes:
+  jenkins_home:
+    external: true #so that docker uses existing volume if it exits
+
